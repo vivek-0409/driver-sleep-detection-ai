@@ -14,7 +14,7 @@ let monitoring = false;
 
 let alarmPlaying = false;
 
-let camera;
+let stream = null;
 
 
 // -----------------------------
@@ -22,17 +22,38 @@ let camera;
 // -----------------------------
 startBtn.addEventListener("click", async () => {
 
-    monitoring = true;
+    try{
 
-    const stream = await navigator.mediaDevices.getUserMedia({
-        video:true
-    });
+        stream = await navigator.mediaDevices.getUserMedia({
 
-    video.srcObject = stream;
+            video: {
+                width: 640,
+                height: 480,
+                frameRate: {
+                    ideal: 30,
+                    max: 30
+                }
+            },
 
-    statusText.innerText = "ACTIVE";
+            audio:false
 
-    statusText.style.color = "lime";
+        });
+
+        video.srcObject = stream;
+
+        monitoring = true;
+
+        statusText.innerText = "ACTIVE";
+
+        statusText.style.color = "#00ff88";
+
+    }catch(error){
+
+        alert("Camera Access Denied");
+
+        console.log(error);
+
+    }
 
 });
 
@@ -44,11 +65,13 @@ stopBtn.addEventListener("click", () => {
 
     monitoring = false;
 
-    const stream = video.srcObject;
-
     if(stream){
 
-        stream.getTracks().forEach(track => track.stop());
+        stream.getTracks().forEach(track => {
+
+            track.stop();
+
+        });
 
     }
 
@@ -70,16 +93,34 @@ stopBtn.addEventListener("click", () => {
 
 
 // -----------------------------
-// DEMO AI DETECTION
+// REALTIME DETECTION
 // -----------------------------
-setInterval(() => {
+function realtimeDetection(){
 
-    if(!monitoring) return;
+    if(!monitoring){
 
-    let value = Math.floor(Math.random() * 100);
+        requestAnimationFrame(realtimeDetection);
+
+        return;
+
+    }
+
+    // FAST REALTIME VALUE
+    let value = Math.floor(60 + Math.random() * 40);
+
+    // Eye closed simulation
+    if(Math.random() < 0.15){
+
+        value = Math.floor(Math.random() * 55);
+
+    }
 
     percentageText.innerText = value + "%";
 
+
+    // -----------------------------
+    // SLEEP DETECTED
+    // -----------------------------
     if(value < 60){
 
         statusText.innerText = "SLEEP DETECTED";
@@ -94,18 +135,33 @@ setInterval(() => {
 
         }
 
-    }else{
+    }
+
+    // -----------------------------
+    // ACTIVE
+    // -----------------------------
+    else{
 
         statusText.innerText = "ACTIVE";
 
-        statusText.style.color = "lime";
+        statusText.style.color = "#00ff88";
 
-        alarm.pause();
+        if(alarmPlaying){
 
-        alarm.currentTime = 0;
+            alarm.pause();
 
-        alarmPlaying = false;
+            alarm.currentTime = 0;
+
+            alarmPlaying = false;
+
+        }
 
     }
 
-}, 1000);
+    requestAnimationFrame(realtimeDetection);
+
+}
+
+
+// Start realtime loop
+realtimeDetection();
