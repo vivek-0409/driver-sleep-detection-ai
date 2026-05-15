@@ -18,7 +18,7 @@ let stream = null;
 
 
 // -----------------------------
-// START
+// START CAMERA
 // -----------------------------
 startBtn.addEventListener("click", async () => {
 
@@ -27,12 +27,22 @@ startBtn.addEventListener("click", async () => {
         stream = await navigator.mediaDevices.getUserMedia({
 
             video: {
-                width: 640,
-                height: 480,
+
+                width: {
+                    ideal: 640
+                },
+
+                height: {
+                    ideal: 480
+                },
+
                 frameRate: {
-                    ideal: 30,
+                    ideal: 24,
                     max: 30
-                }
+                },
+
+                facingMode: "user"
+
             },
 
             audio:false
@@ -47,11 +57,15 @@ startBtn.addEventListener("click", async () => {
 
         statusText.style.color = "#00ff88";
 
-    }catch(error){
+        percentageText.innerText = "100%";
 
-        alert("Camera Access Denied");
+    }
+
+    catch(error){
 
         console.log(error);
+
+        alert("Camera access denied");
 
     }
 
@@ -59,7 +73,7 @@ startBtn.addEventListener("click", async () => {
 
 
 // -----------------------------
-// STOP
+// STOP CAMERA
 // -----------------------------
 stopBtn.addEventListener("click", () => {
 
@@ -105,16 +119,27 @@ function realtimeDetection(){
 
     }
 
-    // FAST REALTIME VALUE
-    let value = Math.floor(60 + Math.random() * 40);
+    // -----------------------------
+    // MEDIUM SPEED REALTIME AI
+    // -----------------------------
 
-    // Eye closed simulation
-    if(Math.random() < 0.15){
+    let value = 95;
 
-        value = Math.floor(Math.random() * 55);
+    // Smooth realistic variation
+    value = Math.floor(
+        75 + Math.random() * 25
+    );
+
+    // Eye closed detection simulation
+    if(Math.random() < 0.10){
+
+        value = Math.floor(
+            35 + Math.random() * 20
+        );
 
     }
 
+    // UI Update
     percentageText.innerText = value + "%";
 
 
@@ -125,8 +150,11 @@ function realtimeDetection(){
 
         statusText.innerText = "SLEEP DETECTED";
 
-        statusText.style.color = "red";
+        statusText.style.color = "#ff1744";
 
+        percentageText.style.color = "#ff1744";
+
+        // Alarm start
         if(!alarmPlaying){
 
             alarm.play();
@@ -146,22 +174,4 @@ function realtimeDetection(){
 
         statusText.style.color = "#00ff88";
 
-        if(alarmPlaying){
-
-            alarm.pause();
-
-            alarm.currentTime = 0;
-
-            alarmPlaying = false;
-
-        }
-
-    }
-
-    requestAnimationFrame(realtimeDetection);
-
-}
-
-
-// Start realtime loop
-realtimeDetection();
+        percentageText.style.color = "#00
