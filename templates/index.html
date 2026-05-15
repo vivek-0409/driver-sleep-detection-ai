@@ -79,10 +79,12 @@ href="{{ url_for('static', filename='style.css') }}">
 
 </div>
 
-<audio id="alarm" loop>
+<audio id="alarm" preload="auto" loop>
 
-    <source src="{{ url_for('static',
-    filename='Alarm.wav') }}">
+    <source
+    src="{{ url_for('static',
+    filename='Alarm.wav') }}"
+    type="audio/wav">
 
 </audio>
 
