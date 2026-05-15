@@ -1,96 +1,151 @@
-<!DOCTYPE html>
-<html lang="en">
+const video = document.getElementById("video");
 
-<head>
+const canvas = document.getElementById("canvas");
 
-<meta charset="UTF-8">
+const ctx = canvas.getContext("2d");
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+const statusText = document.getElementById("status");
 
-<title>Driver Sleep Detection AI</title>
+const percentageText = document.getElementById("percentage");
 
-<link rel="stylesheet"
-href="{{ url_for('static', filename='style.css') }}">
+const alarm = document.getElementById("alarm");
 
-</head>
+const startBtn = document.getElementById("startBtn");
 
-<body>
+const stopBtn = document.getElementById("stopBtn");
 
-<div class="container">
+let monitoring = false;
 
-    <div class="title">
+let alarmPlaying = false;
 
-        <h1>🚗 Driver Sleep Detection AI</h1>
+let stream = null;
 
-        <p>
-            Real-Time AI Driver Monitoring System
-        </p>
 
-    </div>
+// -----------------------------
+// START
+// -----------------------------
+startBtn.addEventListener("click", async () => {
 
-    <div class="video-box">
+    if(monitoring) return;
 
-        <video
-        id="video"
-        autoplay
-        playsinline>
-        </video>
+    try{
 
-    </div>
+        stream = await navigator.mediaDevices.getUserMedia({
 
-    <div class="panel">
+            video:{
+                width:640,
+                height:480,
+                frameRate:24
+            },
 
-        <div class="card">
+            audio:false
 
-            <h2>Status</h2>
+        });
 
-            <p id="status">
-                STOPPED
-            </p>
+        video.srcObject = stream;
 
-        </div>
+        monitoring = true;
 
-        <div class="card">
+        statusText.innerText = "ACTIVE";
 
-            <h2>Eye Detection</h2>
+        statusText.style.color = "#00ff88";
 
-            <p id="percentage">
-                100%
-            </p>
+        percentageText.innerText = "100%";
 
-        </div>
+        realtimeDetection();
 
-    </div>
+    }
 
-    <div class="buttons">
+    catch(error){
 
-        <button id="startBtn">
-            ▶ Start Detection
-        </button>
+        console.log(error);
 
-        <button id="stopBtn">
-            ⏹ Stop Detection
-        </button>
+        alert("Camera Access Denied");
 
-    </div>
+    }
 
-    <div class="footer">
+});
 
-        AI Driver Monitoring • Real-Time Detection
 
-    </div>
+// -----------------------------
+// STOP
+// -----------------------------
+stopBtn.addEventListener("click", () => {
 
-</div>
+    monitoring = false;
 
-<audio id="alarm" loop>
-    <source src="{{ url_for('static',
-    filename='Alarm.wav') }}">
-</audio>
+    if(stream){
 
-<script src="{{ url_for('static',
-filename='script.js') }}">
-</script>
+        stream.getTracks().forEach(track => {
 
-</body>
-</html>
+            track.stop();
+
+        });
+
+    }
+
+    video.srcObject = null;
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    alarm.pause();
+
+    alarm.currentTime = 0;
+
+    alarmPlaying = false;
+
+    statusText.innerText = "STOPPED";
+
+    statusText.style.color = "orange";
+
+    percentageText.innerText = "--";
+
+});
+
+
+// -----------------------------
+// REALTIME DETECTION
+// -----------------------------
+function realtimeDetection(){
+
+    if(!monitoring) return;
+
+    canvas.width = video.videoWidth;
+
+    canvas.height = video.videoHeight;
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    // FACE FRAME
+    ctx.strokeStyle = "#00ffff";
+
+    ctx.lineWidth = 4;
+
+    const frameWidth = 250;
+
+    const frameHeight = 300;
+
+    const x =
+    (canvas.width - frameWidth) / 2;
+
+    const y =
+    (canvas.height - frameHeight) / 2;
+
+    ctx.strokeRect(
+        x,
+        y,
+        frameWidth,
+        frameHeight
+    );
+
+    // REALTIME MED
