@@ -41,6 +41,17 @@ body{
     margin-bottom:25px;
 }
 
+video{
+    width:100%;
+    max-width:900px;
+    border-radius:20px;
+    border:4px solid cyan;
+    background:black;
+    object-fit:cover;
+    box-shadow:0 0 25px rgba(0,255,255,0.5);
+}
+
+
 #videoFeed{
     width:100%;
     max-width:1000px;
