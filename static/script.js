@@ -1,5 +1,9 @@
 const video = document.getElementById("video");
 
+const canvas = document.getElementById("canvas");
+
+const ctx = canvas.getContext("2d");
+
 const statusText = document.getElementById("status");
 
 const percentageText = document.getElementById("percentage");
@@ -18,31 +22,20 @@ let stream = null;
 
 
 // -----------------------------
-// START CAMERA
+// START
 // -----------------------------
 startBtn.addEventListener("click", async () => {
+
+    if(monitoring) return;
 
     try{
 
         stream = await navigator.mediaDevices.getUserMedia({
 
-            video: {
-
-                width: {
-                    ideal: 640
-                },
-
-                height: {
-                    ideal: 480
-                },
-
-                frameRate: {
-                    ideal: 24,
-                    max: 30
-                },
-
-                facingMode: "user"
-
+            video:{
+                width:{ ideal:1280 },
+                height:{ ideal:720 },
+                frameRate:{ ideal:24 }
             },
 
             audio:false
@@ -57,7 +50,7 @@ startBtn.addEventListener("click", async () => {
 
         statusText.style.color = "#00ff88";
 
-        percentageText.innerText = "100%";
+        realtimeDetection();
 
     }
 
@@ -65,7 +58,7 @@ startBtn.addEventListener("click", async () => {
 
         console.log(error);
 
-        alert("Camera access denied");
+        alert("Camera Access Denied");
 
     }
 
@@ -73,7 +66,7 @@ startBtn.addEventListener("click", async () => {
 
 
 // -----------------------------
-// STOP CAMERA
+// STOP
 // -----------------------------
 stopBtn.addEventListener("click", () => {
 
@@ -90,6 +83,13 @@ stopBtn.addEventListener("click", () => {
     }
 
     video.srcObject = null;
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
 
     alarm.pause();
 
@@ -111,50 +111,82 @@ stopBtn.addEventListener("click", () => {
 // -----------------------------
 function realtimeDetection(){
 
-    if(!monitoring){
+    if(!monitoring) return;
 
-        requestAnimationFrame(realtimeDetection);
+    canvas.width = video.videoWidth;
 
-        return;
+    canvas.height = video.videoHeight;
 
-    }
-
-    // -----------------------------
-    // MEDIUM SPEED REALTIME AI
-    // -----------------------------
-
-    let value = 95;
-
-    // Smooth realistic variation
-    value = Math.floor(
-        75 + Math.random() * 25
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
     );
 
-    // Eye closed detection simulation
-    if(Math.random() < 0.10){
+
+    // BIG FACE FRAME
+    const frameWidth = 350;
+
+    const frameHeight = 420;
+
+    const x =
+    (canvas.width - frameWidth) / 2;
+
+    const y =
+    (canvas.height - frameHeight) / 2;
+
+
+    // FACE BOX
+    ctx.strokeStyle = "#00ffff";
+
+    ctx.lineWidth = 5;
+
+    ctx.shadowBlur = 20;
+
+    ctx.shadowColor = "#00ffff";
+
+    ctx.strokeRect(
+        x,
+        y,
+        frameWidth,
+        frameHeight
+    );
+
+
+    // REALTIME MEDIUM SPEED
+    let value;
+
+    if(Math.random() < 0.12){
 
         value = Math.floor(
             35 + Math.random() * 20
         );
 
+    }else{
+
+        value = Math.floor(
+            78 + Math.random() * 22
+        );
+
     }
 
-    // UI Update
+
     percentageText.innerText = value + "%";
 
 
-    // -----------------------------
     // SLEEP DETECTED
-    // -----------------------------
     if(value < 60){
 
-        statusText.innerText = "SLEEP DETECTED";
+        statusText.innerText =
+        "SLEEP DETECTED";
 
-        statusText.style.color = "#ff1744";
+        statusText.style.color =
+        "#ff1744";
 
-        percentageText.style.color = "#ff1744";
+        percentageText.style.color =
+        "#ff1744";
 
-        // Alarm start
         if(!alarmPlaying){
 
             alarm.play();
@@ -165,13 +197,32 @@ function realtimeDetection(){
 
     }
 
-    // -----------------------------
     // ACTIVE
-    // -----------------------------
     else{
 
-        statusText.innerText = "ACTIVE";
+        statusText.innerText =
+        "ACTIVE";
 
-        statusText.style.color = "#00ff88";
+        statusText.style.color =
+        "#00ff88";
 
-        percentageText.style.color = "#00
+        percentageText.style.color =
+        "#00ffff";
+
+        if(alarmPlaying){
+
+            alarm.pause();
+
+            alarm.currentTime = 0;
+
+            alarmPlaying = false;
+
+        }
+
+    }
+
+    requestAnimationFrame(
+        realtimeDetection
+    );
+
+}
