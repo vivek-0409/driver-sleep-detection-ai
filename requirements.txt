@@ -1,0 +1,33 @@
+Flask==3.0.3
+opencv-python-headless==4.11.0.86
+mediapipe==0.10.21
+numpy<2
+gunicorn
+
+
+
+
+
+
+
+
+
+# STEP 1 — Activate Environment
+# cd C:\Users\NEEL\OneDrive\Desktop\Python\My_code\My_projects\driver_sleep_drain
+# .\mp-env\Scripts\activate
+# STEP 2 — Go To Web Project Folder
+# cd ..\driver_sleep_web
+# STEP 3 — Check Python Version
+# python --version
+# STEP 4 — Run Correctly
+# python app.py
+
+
+
+
+
+# cd C:\Users\NEEL\OneDrive\Desktop\Python\My_code\My_projects\driver_sleep_drain
+# .\mp-env\Scripts\activate
+# cd ..\driver_sleep_web
+# dir
+# python app.py
