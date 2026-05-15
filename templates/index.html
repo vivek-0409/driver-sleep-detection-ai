@@ -5,7 +5,8 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>Driver Sleep Detection AI</title>
 
@@ -18,20 +19,46 @@ href="{{ url_for('static', filename='style.css') }}">
 
 <div class="container">
 
-    <h1>🚗 Driver Sleep Detection AI</h1>
+    <div class="title">
 
-    <video id="video" autoplay playsinline></video>
+        <h1>🚗 Driver Sleep Detection AI</h1>
+
+        <p>
+            Real-Time AI Driver Monitoring System
+        </p>
+
+    </div>
+
+    <div class="video-box">
+
+        <video
+        id="video"
+        autoplay
+        playsinline>
+        </video>
+
+    </div>
 
     <div class="panel">
 
         <div class="card">
+
             <h2>Status</h2>
-            <p id="status">STOPPED</p>
+
+            <p id="status">
+                STOPPED
+            </p>
+
         </div>
 
         <div class="card">
-            <h2>Alertness</h2>
-            <p id="percentage">100%</p>
+
+            <h2>Eye Detection</h2>
+
+            <p id="percentage">
+                100%
+            </p>
+
         </div>
 
     </div>
@@ -39,22 +66,31 @@ href="{{ url_for('static', filename='style.css') }}">
     <div class="buttons">
 
         <button id="startBtn">
-            ▶ Start
+            ▶ Start Detection
         </button>
 
         <button id="stopBtn">
-            ⏹ Stop
+            ⏹ Stop Detection
         </button>
+
+    </div>
+
+    <div class="footer">
+
+        AI Driver Monitoring • Real-Time Detection
 
     </div>
 
 </div>
 
 <audio id="alarm" loop>
-    <source src="{{ url_for('static', filename='Alarm.wav') }}">
+    <source src="{{ url_for('static',
+    filename='Alarm.wav') }}">
 </audio>
 
-<script src="{{ url_for('static', filename='script.js') }}"></script>
+<script src="{{ url_for('static',
+filename='script.js') }}">
+</script>
 
 </body>
 </html>
