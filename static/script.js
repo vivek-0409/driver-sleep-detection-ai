@@ -50,6 +50,8 @@ startBtn.addEventListener("click", async () => {
 
         statusText.style.color = "#00ff88";
 
+        percentageText.innerText = "100%";
+
         realtimeDetection();
 
     }
@@ -91,6 +93,7 @@ stopBtn.addEventListener("click", () => {
         canvas.height
     );
 
+    // STOP ALARM
     alarm.pause();
 
     alarm.currentTime = 0;
@@ -125,7 +128,9 @@ function realtimeDetection(){
     );
 
 
+    // -----------------------------
     // BIG FACE FRAME
+    // -----------------------------
     const frameWidth = 350;
 
     const frameHeight = 420;
@@ -154,16 +159,22 @@ function realtimeDetection(){
     );
 
 
+    // -----------------------------
     // REALTIME MEDIUM SPEED
+    // -----------------------------
     let value;
 
+    // Simulate sleep detection
     if(Math.random() < 0.12){
 
         value = Math.floor(
             35 + Math.random() * 20
         );
 
-    }else{
+    }
+
+    // Active
+    else{
 
         value = Math.floor(
             78 + Math.random() * 22
@@ -172,10 +183,13 @@ function realtimeDetection(){
     }
 
 
+    // UPDATE UI
     percentageText.innerText = value + "%";
 
 
+    // -----------------------------
     // SLEEP DETECTED
+    // -----------------------------
     if(value < 60){
 
         statusText.innerText =
@@ -187,17 +201,37 @@ function realtimeDetection(){
         percentageText.style.color =
         "#ff1744";
 
+
+        // PLAY ALARM
         if(!alarmPlaying){
 
-            alarm.play();
+            alarm.volume = 1.0;
 
-            alarmPlaying = true;
+            alarm.play()
+
+            .then(() => {
+
+                alarmPlaying = true;
+
+            })
+
+            .catch(err => {
+
+                console.log(
+                    "Alarm Error:",
+                    err
+                );
+
+            });
 
         }
 
     }
 
+
+    // -----------------------------
     // ACTIVE
+    // -----------------------------
     else{
 
         statusText.innerText =
@@ -209,6 +243,8 @@ function realtimeDetection(){
         percentageText.style.color =
         "#00ffff";
 
+
+        // STOP ALARM
         if(alarmPlaying){
 
             alarm.pause();
@@ -221,6 +257,8 @@ function realtimeDetection(){
 
     }
 
+
+    // LOOP
     requestAnimationFrame(
         realtimeDetection
     );
