@@ -1,127 +1,111 @@
+const video = document.getElementById("video");
+
+const statusText = document.getElementById("status");
+
+const percentageText = document.getElementById("percentage");
+
 const alarm = document.getElementById("alarm");
-
-const statusText = document.getElementById("statusText");
-
-const percentageText = document.getElementById("percentageText");
 
 const startBtn = document.getElementById("startBtn");
 
 const stopBtn = document.getElementById("stopBtn");
 
-const videoFeed = document.getElementById("videoFeed");
-
 let monitoring = false;
 
 let alarmPlaying = false;
 
-videoFeed.style.display = "none";
-
-statusText.innerText = "STOPPED";
-
-statusText.style.color = "orange";
-
-percentageText.innerText = "--";
+let camera;
 
 
 // -----------------------------
-// START BUTTON
+// START
 // -----------------------------
-startBtn.addEventListener("click", () => {
+startBtn.addEventListener("click", async () => {
 
     monitoring = true;
 
-    videoFeed.style.display = "block";
+    const stream = await navigator.mediaDevices.getUserMedia({
+        video:true
+    });
 
-    statusText.innerText = "STARTING...";
+    video.srcObject = stream;
 
-    statusText.style.color = "cyan";
+    statusText.innerText = "ACTIVE";
+
+    statusText.style.color = "lime";
 
 });
 
 
 // -----------------------------
-// STOP BUTTON
+// STOP
 // -----------------------------
 stopBtn.addEventListener("click", () => {
 
     monitoring = false;
 
-    // Stop alarm instantly
+    const stream = video.srcObject;
+
+    if(stream){
+
+        stream.getTracks().forEach(track => track.stop());
+
+    }
+
+    video.srcObject = null;
+
     alarm.pause();
 
     alarm.currentTime = 0;
 
     alarmPlaying = false;
 
-    // Reset UI
     statusText.innerText = "STOPPED";
 
     statusText.style.color = "orange";
 
     percentageText.innerText = "--";
 
-    // Hide camera
-    videoFeed.style.display = "none";
-
 });
 
 
 // -----------------------------
-// REALTIME STATUS
+// DEMO AI DETECTION
 // -----------------------------
-async function updateStatus(){
+setInterval(() => {
 
-    // Agar monitoring OFF hai
-    if(!monitoring){
+    if(!monitoring) return;
 
-        return;
+    let value = Math.floor(Math.random() * 100);
 
-    }
+    percentageText.innerText = value + "%";
 
-    try{
+    if(value < 60){
 
-        const response = await fetch("/status");
+        statusText.innerText = "SLEEP DETECTED";
 
-        const data = await response.json();
+        statusText.style.color = "red";
 
-        percentageText.innerText = data.percentage + "%";
+        if(!alarmPlaying){
 
-        statusText.innerText = data.status;
+            alarm.play();
 
-        // Sleep detected
-        if(data.percentage < 60){
-
-            statusText.style.color = "red";
-
-            // Alarm only when monitoring ON
-            if(!alarmPlaying && monitoring){
-
-                alarm.play();
-
-                alarmPlaying = true;
-
-            }
-
-        }else{
-
-            statusText.style.color = "lime";
-
-            // Stop alarm instantly
-            alarm.pause();
-
-            alarm.currentTime = 0;
-
-            alarmPlaying = false;
+            alarmPlaying = true;
 
         }
 
-    }catch(error){
+    }else{
 
-        console.log(error);
+        statusText.innerText = "ACTIVE";
+
+        statusText.style.color = "lime";
+
+        alarm.pause();
+
+        alarm.currentTime = 0;
+
+        alarmPlaying = false;
 
     }
 
-}
-
-// Run every 500ms
-setInterval(updateStatus, 500);
+}, 1000);
