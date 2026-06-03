@@ -8,3 +8,10 @@ streamlit==1.45.1
 opencv-python-headless==4.10.0.84
 mediapipe==0.10.35
 numpy==1.26.4
+
+
+flask
+uvicorn
+starlette
+opencv-python
+opencv-contrib-python
