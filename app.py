@@ -1,3 +1,4 @@
+import streamlit as st
 from flask import Flask, render_template, Response, jsonify
 import cv2
 import mediapipe as mp
