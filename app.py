@@ -1,5 +1,4 @@
 import streamlit as st
-from flask import Flask, render_template, Response, jsonify
 import cv2
 import mediapipe as mp
 import numpy as np
@@ -52,7 +51,7 @@ def compute_eye_ratio(landmarks, image_w, image_h, up_idx, down_idx, left_idx, r
 # -----------------------------
 # Camera
 # -----------------------------
-camera = cv2.VideoCapture(0)
+img = st.camera_input("Take a picture")
 
 def generate_frames():
 
