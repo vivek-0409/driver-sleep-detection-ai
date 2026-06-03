@@ -3,7 +3,7 @@ import cv2
 import mediapipe as mp
 import numpy as np
 
-app = Flask(__name__)
+
 
 # -----------------------------
 # MediaPipe Setup
