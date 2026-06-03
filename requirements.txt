@@ -3,3 +3,8 @@ uvicorn
 starlette
 opencv-python
 opencv-contrib-python
+
+
+streamlit==1.45.1
+numpy==1.26.4
+opencv-python-headless==4.10.0.84
