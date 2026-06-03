@@ -1,16 +1,11 @@
 import streamlit as st
-# import cv2
-# import mediapipe as mp
+import cv2
+import mediapipe as mp
 import numpy as np
-
-
-
-import streamlit as st
 
 st.write("STARTED")
 
-# import cv2
-# import mediapipe as mp
+
 # -----------------------------
 # MediaPipe Setup
 # -----------------------------
